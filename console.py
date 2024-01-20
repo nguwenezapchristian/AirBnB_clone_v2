@@ -138,9 +138,13 @@ class HBNBCommand(cmd.Cmd):
                 obj = eval(my_list[0])()
             else:
                 obj = eval(my_list[0])(**kwargs)
+            
+            if obj not in storage._DBStorage__session:
                 storage.new(obj)
-            print(obj.id)
-            obj.save()
+                obj.save()
+                print(obj.id)
+            else:
+                print(obj.id)
 
         except SyntaxError:
             print("** class name missing **")

@@ -55,7 +55,8 @@ class DBStorage:
     
     def new(self, obj):
         """adds a new object to the to the database"""
-        self.__session.add(obj)
+        if obj not in self.__session:
+            self.__session.add(obj)
 
     def save(self, obj):
         """this saves the changes and commits them to the database"""
@@ -67,7 +68,7 @@ class DBStorage:
 
     def reload (self):
         Base.metadata.create_all(self.__engine)
-        session_expire = sessionmaker(bind=self.__engine, expire_on_commi=False)
+        session_expire = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(session_expire)
 
         self.__session = Session()

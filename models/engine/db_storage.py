@@ -9,9 +9,13 @@ from models.amenity import Amenity
 from models.review import Review
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship
-from os import getenv
+import os
+from dotenv import load_dotenv
 
 
+
+""" load variable from env file """
+load_dotenv()
 class DBStorage:
     """Represents a database storage engine.
 
@@ -26,12 +30,13 @@ class DBStorage:
     def __init__(self):
         """Initialize a new Storage instance."""
         self.__engine = create_engine("mysql+mysqldb://{}:{}@{}/{}".
-                                      format(getenv("HBNB_MYSQL_USER"),
-                                             getenv("HBNB_MYSQL_PWD"),
-                                             getenv("HBNB_MYSQL_HOST"),
-                                             getenv("HBNB_MYSQL_DB")),
+                                      format(
+                                          os.environ.get("HBNB_MYSQL_USER"),
+                                          os.environ.get("HBNB_MYSQL_PWD"),
+                                          os.environ.get("HBNB_MYSQL_HOST"),
+                                          os.environ.get("HBNB_MYSQL_DB")),
                                       pool_pre_ping=True)
-        if getenv("HBNB_ENV") == "test":
+        if os.environ.get("HBNB_ENV") == "test":
             Base.metadata.drop_all(self.__engine)
     def all(self, cls=None):
         """Query all objects and return dictionaries"""

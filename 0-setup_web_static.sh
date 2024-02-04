@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# this sets server for deploayment
+# This script sets up directories and deploys a simple HTML page
+
+# Define directories
 directories=(
     "/data/"
     "/data/web_static/"
@@ -7,12 +9,23 @@ directories=(
     "/data/web_static/shared/"
     "/data/web_static/releases/test/"
 )
-for dir in "${directories[@]}"; do 
+
+for dir in "${directories[@]}"; do
     if [ ! -d "$dir" ]; then
         mkdir -p "$dir"
+    fi
+done
 
-echo "<!DOCTYPE html>
-        <html lang="en">
-	    <head>This is the head</head>
-        <body> This is the test html</body>
-        </html>
+html_content='<!DOCTYPE html>
+<html lang="en">
+<head></head>
+<body>
+    Holberton School
+</body>
+</html>'
+
+echo "$html_content" > "/data/web_static/releases/test/index.html"
+
+ln -sfT "/data/web_static/releases/test/" "/data/web_static/current"
+
+chown -R ubuntu:ubuntu /data/

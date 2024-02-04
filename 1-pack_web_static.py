@@ -5,6 +5,7 @@ import os
 import tarfile
 from datetime import datetime
 
+
 @task
 def do_pack():
     """Create a .tgz archive from the contents of the web_static folder."""

@@ -1,27 +1,22 @@
 #!/usr/bin/python3
-"""this is a fabric script that creates a tgxz file"""
-from fabric import task
-import os
-import tarfile
+# Fabfile to generates a .tgz archive from the contents of web_static.
+import os.path
 from datetime import datetime
+from fabric.api import local
 
-@task
+
 def do_pack():
-    """this creates a pack"""
-    src_dir = "web_static/"
-    dest_dir = "web_static/versions"
-
-    if not os.path.exists(src_dir):
-        raise Exception(f"The source doesnt exitsts")
-    if not os.path.exists(dest_dir):
-        os.makedirs(dest_dir)
-    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-
-    file_name = f"web_static_{timestamp}.tgz"
-
-    archive_path = os.path.join(dest_dir, file_name)
-
-    with tarfile.open(os.path.join(dest_dir, file_name), "w:gz") as tar:
-        tar.add(src_dir, arcname=os.path.basename(src_dir))
-
-    return archive_path if os.path.exists(archive_path) else None
+    """Create a tar gzipped archive of the directory web_static."""
+    dt = datetime.utcnow()
+    file = "versions/web_static_{}{}{}{}{}{}.tgz".format(dt.year,
+                                                         dt.month,
+                                                         dt.day,
+                                                         dt.hour,
+                                                         dt.minute,
+                                                         dt.second)
+    if os.path.isdir("versions") is False:
+        if local("mkdir -p versions").failed is True:
+            return None
+    if local("tar -cvzf {} web_static".format(file)).failed is True:
+        return None
+    return file
